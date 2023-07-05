@@ -8,25 +8,25 @@ This is a new [**React Native**](https://reactnative.dev) project, bootstrapped 
 
 First, you will need to build the project:
 
-````bash
+```bash
 # using npm
 yarn install
+```
 
 ## Step 2: Start your Application
 
 Then you can run the app
+
 ### For Android
 
 ```bash
-
 # Using Yarn
 yarn android
-````
+```
 
 ### For iOS
 
 ```bash
-
 # Using Yarn
 yarn ios
 ```
