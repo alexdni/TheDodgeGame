@@ -101,16 +101,16 @@ const Setup = setScore => {
   };
 };
 
-const MoveCircle = (entities, {touches, dispatch}) => {
+const MoveCircle = (entities, {touches}) => {
   let move = touches.find(x => x.type === 'move');
-
   if (move) {
     let circle = entities.circle;
-    let {pageX, pageY} = move.event.nativeEvent;
     Matter.Body.setStatic(circle.body, false);
-    Matter.Body.setPosition(circle.body, {x: pageX, y: pageY});
+    Matter.Body.setPosition(circle.body, {
+      x: move.event.pageX,
+      y: move.event.pageY,
+    });
   }
-
   return entities;
 };
 
@@ -125,15 +125,7 @@ const App = () => {
       physics={physics} // Pass 'physics' separately
       gameStats={gameStats} // Pass 'gameStats' separately
       onStartShouldSetResponder={() => true}
-      onMoveShouldSetResponder={() => true}
-      onResponderMove={({nativeEvent}) => {
-        const {pageX, pageY} = nativeEvent;
-        Matter.Body.setStatic(entities['circle'].body, false);
-        Matter.Body.setPosition(entities['circle'].body, {
-          x: pageX,
-          y: pageY,
-        });
-      }}>
+      onMoveShouldSetResponder={() => true}>
       <Score score={score} setScore={setScore} />
     </GameEngine>
   );
