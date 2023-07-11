@@ -20,6 +20,7 @@ const CreateBox = world => {
     50,
     50,
     {
+      isStatic: true, // make the box static
       inertia: Infinity,
       friction: 0,
       frictionAir: 0,
@@ -37,6 +38,7 @@ const CreateBox = world => {
 
 const CreateCircle = (world, position) => {
   let body = Matter.Bodies.circle(position.x, position.y, 30, {
+    isStatic: true,
     inertia: Infinity,
     friction: 0,
     frictionAir: 0,
@@ -105,6 +107,7 @@ const MoveCircle = (entities, {touches, dispatch}) => {
   if (move) {
     let circle = entities.circle;
     let {pageX, pageY} = move.event.nativeEvent;
+    Matter.Body.setStatic(circle.body, false);
     Matter.Body.setPosition(circle.body, {x: pageX, y: pageY});
   }
 
@@ -113,26 +116,11 @@ const MoveCircle = (entities, {touches, dispatch}) => {
 
 const App = () => {
   const [score, setScore] = useState(0);
-  // let entities = Setup(setScore);
-
-  // return (
-  //   <GameEngine
-  //     systems={[Physics, CreateBox, CheckCollision]}
-  //     entities={entities}
-  //     onStartShouldSetResponder={() => true}
-  //     onMoveShouldSetResponder={() => true}
-  //     onResponderMove={({nativeEvent}) => {
-  //       const {pageX, pageY} = nativeEvent;
-  //       Matter.Body.setPosition(entities['circle'].body, {x: pageX, y: pageY});
-  //     }}>
-  //     <Score score={score} setScore={setScore} />
-  //   </GameEngine>
-  // );
   const {entities, physics, gameStats} = Setup(setScore);
 
   return (
     <GameEngine
-      systems={[Physics]}
+      systems={[Physics, MoveCircle]}
       entities={entities}
       physics={physics} // Pass 'physics' separately
       gameStats={gameStats} // Pass 'gameStats' separately
@@ -140,6 +128,7 @@ const App = () => {
       onMoveShouldSetResponder={() => true}
       onResponderMove={({nativeEvent}) => {
         const {pageX, pageY} = nativeEvent;
+        Matter.Body.setStatic(entities['circle'].body, false);
         Matter.Body.setPosition(entities['circle'].body, {
           x: pageX,
           y: pageY,
