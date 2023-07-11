@@ -12,10 +12,12 @@ const getRandomVelocity = () => {
 
 const Physics = (entities, {time}) => {
   let engine = entities.physics.engine;
+  let gameStats = entities.gameStats;
+
   Matter.Engine.update(engine, time.delta);
 
   Object.values(entities).forEach(entity => {
-    if (entity.body) {
+    if (entity.body && entity.body.position) {
       const {body} = entity;
 
       // Check for out of bounds and bounce

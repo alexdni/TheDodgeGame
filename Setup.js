@@ -13,6 +13,27 @@ const Setup = () => {
 
   world.gravity.y = 0;
 
+  entities['circle'] = {
+    body: Matter.Bodies.circle(width / 2, height / 2, 30, {isStatic: true}),
+    color: 'blue',
+    renderer: Circle,
+  };
+
+  entities['box'] = {
+    body: Matter.Bodies.rectangle(
+      Math.random() * width,
+      Math.random() * height,
+      50,
+      50,
+      {isStatic: true},
+    ),
+    color: 'blue',
+    renderer: Box,
+  };
+
+  entities['score'] = {score: 0};
+  entities['ballsCount'] = {count: 10}; // initialize with 10 balls
+
   // create an array of balls
   let balls = Array.from({length: 10}).map((_, i) => {
     let body = Matter.Bodies.circle(
