@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Dimensions, View} from 'react-native';
+import {Dimensions, Vibration, View} from 'react-native';
 import {GameEngine} from 'react-native-game-engine';
 import Matter from 'matter-js';
 import Physics from './systems/Physics';
@@ -8,7 +8,6 @@ import Circle from './components/Circle';
 import Box from './components/Box';
 import Ball from './components/Ball';
 import Score from './components/Score';
-
 const {width, height} = Dimensions.get('window');
 const initialBoxSize = Math.trunc(
   Math.max(Dimensions.get('window').width, Dimensions.get('window').height) / 3,
@@ -143,6 +142,7 @@ const Setup = (setScore, dimensions) => {
       ) {
         entities.gameStats.score.score -= 5;
         entities.gameStats.score.setScore(entities.gameStats.score.score);
+        Vibration.vibrate(50);
       }
     });
   });
