@@ -11,7 +11,7 @@ import Score from './components/Score';
 
 const {width, height} = Dimensions.get('window');
 const boxSize = Math.trunc(Math.max(width, height) / 3);
-const initialBalls = 5;
+const initialBalls = 10;
 
 const CreateBox = world => {
   let body = Matter.Bodies.rectangle(
@@ -26,6 +26,7 @@ const CreateBox = world => {
       frictionAir: 0,
       frictionStatic: 0,
       restitution: 1,
+      label: 'box',
     },
   );
   Matter.World.addBody(world, body);
@@ -37,13 +38,14 @@ const CreateBox = world => {
 };
 
 const CreateCircle = (world, position) => {
-  let body = Matter.Bodies.circle(position.x, position.y, 30, {
+  let body = Matter.Bodies.circle(position.x, position.y, 20, {
     isStatic: true,
     inertia: Infinity,
     friction: 0,
     frictionAir: 0,
     frictionStatic: 0,
     restitution: 1,
+    label: 'circle',
   });
   Matter.World.add(world, body);
   return {
@@ -61,7 +63,7 @@ const Setup = setScore => {
   let circle = CreateCircle(world, {x: width / 2, y: height / 2});
 
   let entities = {
-    physics: {engine: engine, world: world},
+    physics: {engine: engine, world: world, initialBalls: initialBalls},
     gameStats: {
       ballsCount: {count: initialBalls},
       score: {
@@ -78,7 +80,7 @@ const Setup = setScore => {
       Math.random() * width,
       Math.random() * height,
       30,
-      {isStatic: false},
+      {isStatic: false, label: 'ball${i}'},
     );
     entities[`ball${i}`] = {
       body: ballBody,
@@ -88,9 +90,47 @@ const Setup = setScore => {
     Matter.World.add(world, ballBody);
   }
 
+  Matter.Events.on(engine, 'collisionStart', event => {
+    var pairs = event.pairs;
+
+    pairs.forEach(pair => {
+      if (
+        (pair.bodyA.label === 'circle' && pair.bodyB.label === 'box') ||
+        (pair.bodyB.label === 'circle' && pair.bodyA.label === 'box')
+      ) {
+        // Box and circle have collided
+        entities.gameStats.score.score += 10;
+        entities.gameStats.score.setScore(entities.gameStats.score.score);
+
+        // Move the box to a new location
+        // Matter.Body.setPosition(entities.box.body, {
+        //   x: Math.random() * (width - 100) + 50,
+        //   y: Math.random() * (height - 100) + 50,
+        // });
+
+        Matter.Body.setPosition(entities.box.body, {
+          x: Math.random() * (width - boxSize) + boxSize / 2,
+          y: Math.random() * (height - boxSize) + boxSize / 2,
+        });
+      }
+
+      if (
+        // (pair.bodyA.label === 'circle' &&
+        //   pair.bodyB.label.startsWith('ball')) ||
+        // (pair.bodyB.label === 'circle' && pair.bodyA.label.startsWith('ball'))
+        (pair.bodyA.label === 'circle' &&
+          pair.bodyB.label.startsWith('ball')) ||
+        (pair.bodyB.label === 'circle' && pair.bodyA.label.startsWith('ball'))
+      ) {
+        entities.gameStats.score.score -= 5;
+        entities.gameStats.score.setScore(entities.gameStats.score.score);
+      }
+    });
+  });
+
   return {
     entities,
-    physics: {engine: engine, world: world},
+    physics: {engine: engine, world: world, initialBalls: initialBalls},
     gameStats: {
       ballsCount: {count: initialBalls},
       score: {
@@ -122,8 +162,8 @@ const App = () => {
     <GameEngine
       systems={[Physics, MoveCircle]}
       entities={entities}
-      physics={physics} // Pass 'physics' separately
-      gameStats={gameStats} // Pass 'gameStats' separately
+      physics={physics}
+      gameStats={gameStats}
       onStartShouldSetResponder={() => true}
       onMoveShouldSetResponder={() => true}>
       <Score score={score} setScore={setScore} />
