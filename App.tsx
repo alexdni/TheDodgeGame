@@ -72,7 +72,7 @@ const CreateBall = (world, entities, id) => {
   Matter.World.add(world, ballBody);
 };
 
-const Setup = (setScore, dimensions) => {
+const Setup = (setScore, dimensions, setBgColor) => {
   const {width, height} = dimensions;
   const boxSize = Math.trunc(Math.max(width, height) / 3);
   const engine = Matter.Engine.create({enableSleeping: false});
@@ -143,6 +143,13 @@ const Setup = (setScore, dimensions) => {
         entities.gameStats.score.score -= 5;
         entities.gameStats.score.setScore(entities.gameStats.score.score);
         Vibration.vibrate(50);
+        // Flash the screen red
+        setBgColor('pink');
+
+        // After 50ms, reset the color back to white
+        setTimeout(() => {
+          setBgColor('white');
+        }, 50);
       }
     });
   });
@@ -179,12 +186,18 @@ const MoveCircle = (entities, {touches}) => {
 
 const App = () => {
   const [score, setScore] = useState(0);
+
   const [dimensions, setDimensions] = useState({
     width: Dimensions.get('window').width,
     height: Dimensions.get('window').height,
   });
+  const [bgColor, setBgColor] = useState('white');
 
-  const {entities, physics, gameStats} = Setup(setScore, dimensions);
+  const {entities, physics, gameStats} = Setup(
+    setScore,
+    dimensions,
+    setBgColor,
+  );
 
   const onLayout = event => {
     const {width, height} = event.nativeEvent.layout;
@@ -192,7 +205,7 @@ const App = () => {
   };
 
   return (
-    <View style={{flex: 1}} onLayout={onLayout}>
+    <View style={{flex: 1, backgroundColor: bgColor}} onLayout={onLayout}>
       <GameEngine
         systems={[Physics, MoveCircle]}
         entities={entities}
