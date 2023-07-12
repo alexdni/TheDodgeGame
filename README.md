@@ -1,8 +1,26 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
-
-# Getting Started
+# The Dodge Game - originally developed by Lewpen
 
 > **Note**: Make sure you have completed the [React Native - Environment Setup](https://reactnative.dev/docs/environment-setup) instructions till "Creating a new application" step, before proceeding.
+
+## Rules of the game: 
+Objective: The main objective of Dodge is to score as many points as possible by making your blue circle collide with the blue box.
+
+Movement: You can move the blue circle by dragging it across the screen with your finger. The circle will follow the movement of your finger.
+
+Scoring: Each time the blue circle collides with the blue box, you earn 10 points. When this happens, the blue box will randomly reposition itself somewhere else on the screen.
+
+Avoid the Red Balls: While you are chasing the blue box, you need to avoid colliding with the red balls. These balls bounce around the screen and if they collide with the blue circle, you will lose 5 points.
+
+Increasing Difficulty: Every time the blue circle collides with the blue box, a new red ball is added to the screen, increasing the difficulty of the game. This continues until there are a maximum of 10 red balls on the screen.
+
+Haptic Feedback: When the blue circle collides with a red ball, your phone will vibrate briefly and the screen will flash red for a moment to signify the collision and point loss.
+
+Continuous Play: The game continues indefinitely, or until you decide to stop playing. The goal is to score as high as possible without losing too many points to red ball collisions.
+
+## Sample Game Play
+
+https://github.com/alexdni/TheDodgeGame/assets/13934326/728f6986-c0c7-4ed0-8815-dc7de0953021
+
 
 ## Step 1: Build the project
 
@@ -45,24 +63,3 @@ Now that you have successfully run the app, let's modify it.
    For **iOS**: Hit <kbd>Cmd ⌘</kbd> + <kbd>R</kbd> in your iOS Simulator to reload the app and see your changes!
 
 ## Congratulations! :tada:
-
-You've successfully run and modified your React Native App. :partying_face:
-
-### Now what?
-
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [Introduction to React Native](https://reactnative.dev/docs/getting-started).
-
-# Troubleshooting
-
-If you can't get this to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
-
-# Learn More
-
-To learn more about React Native, take a look at the following resources:
-
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
