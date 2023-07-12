@@ -3,7 +3,6 @@ import {Dimensions, Vibration, View} from 'react-native';
 import {GameEngine} from 'react-native-game-engine';
 import Matter from 'matter-js';
 import Physics from './systems/Physics';
-import CheckCollision from './systems/CheckCollision';
 import Circle from './components/Circle';
 import Box from './components/Box';
 import Ball from './components/Ball';
@@ -29,6 +28,11 @@ const CreateBox = (world, dimensions) => {
       frictionStatic: 0,
       restitution: 1,
       label: 'box',
+      collisionFilter: {
+        group: -1,
+        category: 0x0002,
+        mask: 0x0005, // this was changed
+      },
     },
   );
   Matter.World.addBody(world, body);
@@ -48,6 +52,11 @@ const CreateCircle = (world, position) => {
     frictionStatic: 0,
     restitution: 1,
     label: 'circle',
+    collisionFilter: {
+      group: 0,
+      category: 0x0004,
+      mask: 0x0003,
+    },
   });
   Matter.World.add(world, body);
   return {
@@ -62,12 +71,21 @@ const CreateBall = (world, entities, id) => {
     Math.random() * width,
     Math.random() * height,
     30,
-    {isStatic: false, label: `ball${id}`},
+    {
+      isStatic: false,
+      label: `ball${id}`,
+      collisionFilter: {
+        group: -1,
+        category: 0x0001,
+        mask: 0x0006, // this was changed
+      },
+    },
   );
   entities[`ball${id}`] = {
     body: ballBody,
     color: 'red',
     renderer: Ball,
+    id: id,
   };
   Matter.World.add(world, ballBody);
 };
@@ -97,19 +115,7 @@ const Setup = (setScore, dimensions, setBgColor) => {
   };
 
   for (let i = 0; i < initialBalls; i++) {
-    let ballBody = Matter.Bodies.circle(
-      Math.random() * width,
-      Math.random() * height,
-      30,
-      {isStatic: false, label: 'ball${i}'},
-    );
-    entities[`ball${i}`] = {
-      body: ballBody,
-      color: 'red',
-      renderer: Ball,
-      circleRadius: 30,
-    };
-    Matter.World.add(world, ballBody);
+    CreateBall(world, entities, `ball${i}`);
   }
 
   Matter.Events.on(engine, 'collisionStart', event => {
@@ -136,9 +142,8 @@ const Setup = (setScore, dimensions, setBgColor) => {
       }
 
       if (
-        (pair.bodyA.label === 'circle' &&
-          pair.bodyB.label.startsWith('ball')) ||
-        (pair.bodyB.label === 'circle' && pair.bodyA.label.startsWith('ball'))
+        (pair.bodyA.label === 'circle' && pair.bodyB.label.includes('ball')) ||
+        (pair.bodyB.label === 'circle' && pair.bodyA.label.includes('ball'))
       ) {
         entities.gameStats.score.score -= 5;
         entities.gameStats.score.setScore(entities.gameStats.score.score);
