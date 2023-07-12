@@ -13,7 +13,7 @@ const {width, height} = Dimensions.get('window');
 const initialBoxSize = Math.trunc(
   Math.max(Dimensions.get('window').width, Dimensions.get('window').height) / 3,
 );
-const initialBalls = 10;
+const initialBalls = 6;
 
 const CreateBox = (world, dimensions) => {
   let body = Matter.Bodies.rectangle(
@@ -61,6 +61,8 @@ const Setup = (setScore, dimensions) => {
   const {width, height} = dimensions;
   const boxSize = Math.trunc(Math.max(width, height) / 3);
   const engine = Matter.Engine.create({enableSleeping: false});
+  engine.world.gravity.y = 0; // disable vertical gravity
+
   const world = engine.world;
 
   let box = CreateBox(world);
@@ -90,6 +92,7 @@ const Setup = (setScore, dimensions) => {
       body: ballBody,
       color: 'red',
       renderer: Ball,
+      circleRadius: 30,
     };
     Matter.World.add(world, ballBody);
   }
@@ -105,12 +108,6 @@ const Setup = (setScore, dimensions) => {
         // Box and circle have collided
         entities.gameStats.score.score += 10;
         entities.gameStats.score.setScore(entities.gameStats.score.score);
-
-        // Move the box to a new location
-        // Matter.Body.setPosition(entities.box.body, {
-        //   x: Math.random() * (width - 100) + 50,
-        //   y: Math.random() * (height - 100) + 50,
-        // });
 
         Matter.Body.setPosition(entities.box.body, {
           x: Math.random() * (width - boxSize) + boxSize / 2,

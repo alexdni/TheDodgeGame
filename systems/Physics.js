@@ -17,8 +17,16 @@ const Physics = (entities, {time}) => {
   Matter.Engine.update(engine, time.delta);
 
   Object.values(entities).forEach(entity => {
-    if (entity.body) {
+    if (entity.body && entity.body.position && entity !== entities.circle) {
       const {body} = entity;
+
+      // Add a small random impulse
+      const impulse = {
+        x: (Math.random() - 0.5) * 0.01,
+        y: (Math.random() - 0.5) * 0.01,
+      };
+
+      Matter.Body.applyForce(body, body.position, impulse);
 
       // Check for out of bounds and bounce
       if (body.position.y <= body.circleRadius) {
