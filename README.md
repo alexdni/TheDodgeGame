@@ -1,6 +1,8 @@
 # The Dodge Game - originally developed by Lewpen
 
-> **Note**: Make sure you have completed the [React Native - Environment Setup](https://reactnative.dev/docs/environment-setup) instructions till "Creating a new application" step, before proceeding.
+The Lewpen Dodge game is a classic. The point of the game is to see how a player handles stress and navigates a tricky landscape of obstacles while staying focused on goal. 
+
+Since Lewpen pulled the game off their site, I decided to re-write it in React Native for mobile playing purpose. This game can be compiled for both Android and iOS natively. Fork away. :) 
 
 ## Rules of the game: 
 Objective: The main objective of Dodge is to score as many points as possible by making your blue circle collide with the blue box.
@@ -26,6 +28,8 @@ https://github.com/alexdni/TheDodgeGame/assets/13934326/728f6986-c0c7-4ed0-8815-
 Download the APK [here](https://drive.google.com/file/d/1N3Xgtjqzp6JsBiYygjqObwOyoH3N9Mj8/view?usp=sharing).
 
 ## Step 1: Build the project
+
+> **Note**: Make sure you have completed the [React Native - Environment Setup](https://reactnative.dev/docs/environment-setup) instructions till "Creating a new application" step, before proceeding.
 
 First, you will need to build the project:
 
