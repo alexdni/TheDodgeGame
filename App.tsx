@@ -13,7 +13,8 @@ const {width, height} = Dimensions.get('window');
 const initialBoxSize = Math.trunc(
   Math.max(Dimensions.get('window').width, Dimensions.get('window').height) / 3,
 );
-const initialBalls = 6;
+const initialBalls = 5;
+const maxBalls = 10;
 
 const CreateBox = (world, dimensions) => {
   let body = Matter.Bodies.rectangle(
@@ -55,6 +56,21 @@ const CreateCircle = (world, position) => {
     color: 'blue',
     renderer: Circle,
   };
+};
+
+const CreateBall = (world, entities, id) => {
+  let ballBody = Matter.Bodies.circle(
+    Math.random() * width,
+    Math.random() * height,
+    30,
+    {isStatic: false, label: `ball${id}`},
+  );
+  entities[`ball${id}`] = {
+    body: ballBody,
+    color: 'red',
+    renderer: Ball,
+  };
+  Matter.World.add(world, ballBody);
 };
 
 const Setup = (setScore, dimensions) => {
@@ -113,6 +129,11 @@ const Setup = (setScore, dimensions) => {
           x: Math.random() * (width - boxSize) + boxSize / 2,
           y: Math.random() * (height - boxSize) + boxSize / 2,
         });
+        const currentBallsCount = entities.gameStats.ballsCount.count;
+        if (currentBallsCount < maxBalls) {
+          entities.gameStats.ballsCount.count += 1;
+          CreateBall(engine.world, entities, currentBallsCount);
+        }
       }
 
       if (
