@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Dimensions} from 'react-native';
+import {Dimensions, View} from 'react-native';
 import {GameEngine} from 'react-native-game-engine';
 import Matter from 'matter-js';
 import Physics from './systems/Physics';
@@ -10,10 +10,12 @@ import Ball from './components/Ball';
 import Score from './components/Score';
 
 const {width, height} = Dimensions.get('window');
-const boxSize = Math.trunc(Math.max(width, height) / 3);
+const initialBoxSize = Math.trunc(
+  Math.max(Dimensions.get('window').width, Dimensions.get('window').height) / 3,
+);
 const initialBalls = 10;
 
-const CreateBox = world => {
+const CreateBox = (world, dimensions) => {
   let body = Matter.Bodies.rectangle(
     Math.random() * (width - 100) + 50,
     Math.random() * (height - 100) + 50,
@@ -55,7 +57,9 @@ const CreateCircle = (world, position) => {
   };
 };
 
-const Setup = setScore => {
+const Setup = (setScore, dimensions) => {
+  const {width, height} = dimensions;
+  const boxSize = Math.trunc(Math.max(width, height) / 3);
   const engine = Matter.Engine.create({enableSleeping: false});
   const world = engine.world;
 
@@ -115,9 +119,6 @@ const Setup = setScore => {
       }
 
       if (
-        // (pair.bodyA.label === 'circle' &&
-        //   pair.bodyB.label.startsWith('ball')) ||
-        // (pair.bodyB.label === 'circle' && pair.bodyA.label.startsWith('ball'))
         (pair.bodyA.label === 'circle' &&
           pair.bodyB.label.startsWith('ball')) ||
         (pair.bodyB.label === 'circle' && pair.bodyA.label.startsWith('ball'))
@@ -143,6 +144,7 @@ const Setup = setScore => {
 
 const MoveCircle = (entities, {touches}) => {
   let move = touches.find(x => x.type === 'move');
+  let end = touches.find(x => x.type === 'end');
   if (move) {
     let circle = entities.circle;
     Matter.Body.setStatic(circle.body, false);
@@ -150,24 +152,39 @@ const MoveCircle = (entities, {touches}) => {
       x: move.event.pageX,
       y: move.event.pageY,
     });
+  } else if (end) {
+    let circle = entities.circle;
+    Matter.Body.setStatic(circle.body, true);
   }
   return entities;
 };
 
 const App = () => {
   const [score, setScore] = useState(0);
-  const {entities, physics, gameStats} = Setup(setScore);
+  const [dimensions, setDimensions] = useState({
+    width: Dimensions.get('window').width,
+    height: Dimensions.get('window').height,
+  });
+
+  const {entities, physics, gameStats} = Setup(setScore, dimensions);
+
+  const onLayout = event => {
+    const {width, height} = event.nativeEvent.layout;
+    setDimensions({width, height});
+  };
 
   return (
-    <GameEngine
-      systems={[Physics, MoveCircle]}
-      entities={entities}
-      physics={physics}
-      gameStats={gameStats}
-      onStartShouldSetResponder={() => true}
-      onMoveShouldSetResponder={() => true}>
-      <Score score={score} setScore={setScore} />
-    </GameEngine>
+    <View style={{flex: 1}} onLayout={onLayout}>
+      <GameEngine
+        systems={[Physics, MoveCircle]}
+        entities={entities}
+        physics={physics}
+        gameStats={gameStats}
+        onStartShouldSetResponder={() => true}
+        onMoveShouldSetResponder={() => true}>
+        <Score score={score} setScore={setScore} />
+      </GameEngine>
+    </View>
   );
 };
 
