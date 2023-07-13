@@ -21,8 +21,7 @@ Continuous Play: The game continues indefinitely, or until you decide to stop pl
 
 ## Sample Game Play
 
-https://github.com/alexdni/TheDodgeGame/assets/13934326/728f6986-c0c7-4ed0-8815-dc7de0953021
-
+https://github.com/alexdni/TheDodgeGame/assets/13934326/e13b8221-9d8a-4324-854a-5d23559f0a39
 
 ## Compiled Binary
 Download the APK [here](https://drive.google.com/file/d/1N3Xgtjqzp6JsBiYygjqObwOyoH3N9Mj8/view?usp=sharing).
